@@ -2,9 +2,10 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { MoviesModule } from './movies/movies.module';
-import { ShowtimeModule } from './showtimes/showtimes.module';
 
+import { Module_Movies } from './movies/movies.module';
+import { Module_Showtimes } from './showtimes/showtimes.module';
+import { Modlue_Tickets } from './tickets/tickets.module';
 
 @Module({
   
@@ -25,10 +26,11 @@ import { ShowtimeModule } from './showtimes/showtimes.module';
       connectTimeoutMS: 5000, //  timeout
     }),
 
-    MoviesModule,
+    // --------- our modules -------------------------------------------
 
-    ShowtimeModule,
-
+    Module_Movies,
+    Module_Showtimes,
+    Modlue_Tickets,
   ],
 
   controllers: [AppController],

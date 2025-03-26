@@ -16,3 +16,7 @@ describe('ShowtimeService', () => {
     expect(service).toBeDefined();
   });
 });
+
+nest generate module tickets
+nest generate controller tickets
+nest generate service tickets
