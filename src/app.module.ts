@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { MoviesModule } from './movies/movies.module';
 
 
 @Module({
@@ -22,6 +23,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       logging: true, // Enable logging to see connection details
       connectTimeoutMS: 5000, //  timeout
     }),
+
+    MoviesModule,
 
   ],
 
