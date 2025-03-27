@@ -51,7 +51,7 @@ export class Service_Showtimes
     async create(create_DTO: DTO_showtime_create): Promise<Showtime> 
     {
         // movie existance check
-        await this.movies_service.find_by_ID(create_DTO.movie_id);
+        await this.movies_service.find_by_id(create_DTO.movie_id);
 
         // overlapping showtimes check
         await this.check_overlap(
@@ -80,11 +80,11 @@ export class Service_Showtimes
 
     async update(ID: number, update_DTO: DTO_showtime_update): Promise<Showtime> 
     {
-        const showtime = await this.find_by_ID(ID);
+        const showtime = await this.find_by_id(ID);
 
         // movie existance check
         if (update_DTO.movie_id && update_DTO.movie_id !== showtime.movie_id) {
-            await this.movies_service.find_by_ID(update_DTO.movie_id);
+            await this.movies_service.find_by_id(update_DTO.movie_id);
         }
 
         // overlap showtime check (if field updated)
@@ -113,7 +113,7 @@ export class Service_Showtimes
         return this.showtime_repo.find();
     }
 
-    async find_by_ID(ID: number): Promise<Showtime> 
+    async find_by_id(ID: number): Promise<Showtime> 
     {
         const showtime = await this.showtime_repo.findOne({ where: { id: ID } });
         

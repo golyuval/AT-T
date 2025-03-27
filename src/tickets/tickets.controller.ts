@@ -8,33 +8,33 @@ export class Controller_Tickets
 
   // -------- constructor --------------------------------------------------------------
 
-  constructor(private readonly ticketsService: Service_Tickets) {}
+  constructor(private readonly tickets_service: Service_Tickets) {}
 
   // -------- post ---------------------------------------------------------------------
 
   @Post()
-  create(@Body(ValidationPipe) createticketDto: DTO_ticket_create) 
+  create(@Body(ValidationPipe) create_DTO: DTO_ticket_create) 
   {
-    return this.ticketsService.create(createticketDto);
+    return this.tickets_service.create(create_DTO);
   }
 
   // -------- get ----------------------------------------------------------------------
 
   @Get()
-  findAll(@Query('showtime_id') showtimeId?: string) 
+  find_all(@Query('showtime_id') showtime_ID?: string) 
   {
-    if (showtimeId) 
+    if (showtime_ID) 
     {
-      return this.ticketsService.find_by_showtime(+showtimeId);
+      return this.tickets_service.find_by_showtime(+showtime_ID);
     }
     
-    return this.ticketsService.find_all();
+    return this.tickets_service.find_all();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) 
+  find_by_id(@Param('id') id: string) 
   {
-    return this.ticketsService.find_by_id(+id);
+    return this.tickets_service.find_by_id(+id);
   }
 
   // -------- delete --------------------------------------------------------------------
@@ -43,7 +43,7 @@ export class Controller_Tickets
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id') id: string) 
   {
-    return this.ticketsService.remove(+id);
+    return this.tickets_service.remove(+id);
   }
 
 }

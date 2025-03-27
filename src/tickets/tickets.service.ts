@@ -23,7 +23,7 @@ export class Service_Tickets
     async create(create_DTO: DTO_ticket_create): Promise<Ticket> 
     {
         // showtime existence check
-        await this.showtimes_service.find_by_ID(create_DTO.showtime_id);
+        await this.showtimes_service.find_by_id(create_DTO.showtime_id);
 
         // ticket existence check
         const ticket_exist = await this.ticket_repo.findOne({

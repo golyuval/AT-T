@@ -23,15 +23,15 @@ export class Controller_Movies
     // -------- get ---------------------------------------------------------------------
 
     @Get()
-    findAll() 
+    find_all() 
     {
         return this.movies_service.find_all();
     }
 
     @Get(':id')
-    findOne(@Param('id') id: string) 
+    find_by_id(@Param('id') id: string) 
     {
-        return this.movies_service.find_by_ID(+id);
+        return this.movies_service.find_by_id(+id);
     }
 
     // -------- patch ---------------------------------------------------------------------

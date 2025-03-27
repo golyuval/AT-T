@@ -22,15 +22,15 @@ export class Controller_Showtime
     // -------- get ---------------------------------------------------------------------
 
     @Get()
-    findAll() 
+    find_all() 
     {
         return this.showtimes_service.find_all();
     }
 
     @Get(':id')
-    findOne(@Param('id') ID: string) 
+    find_by_id(@Param('id') ID: string) 
     {
-        return this.showtimes_service.find_by_ID(+ID);
+        return this.showtimes_service.find_by_id(+ID);
     }
 
     // -------- patch ---------------------------------------------------------------------
