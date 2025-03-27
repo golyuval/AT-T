@@ -41,7 +41,7 @@ export class Service_Movies
 
     async update(ID: number, update_DTO: DTO_movie_update): Promise<Movie> 
     {
-        const movie = await this.find_by_ID(ID);
+        const movie = await this.find_by_id(ID);
         
         const updated = {
         ...movie,
@@ -58,7 +58,7 @@ export class Service_Movies
         return this.movie_repo.find();
     }
 
-    async find_by_ID(ID: number): Promise<Movie> 
+    async find_by_id(ID: number): Promise<Movie> 
     {
         const movie = await this.movie_repo.findOne({ where: { id: ID } });
 
