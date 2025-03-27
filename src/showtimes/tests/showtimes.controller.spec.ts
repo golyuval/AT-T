@@ -1,11 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Controller_Showtime } from './showtimes.controller';
-import { Service_Showtimes } from './showtimes.service';
+import { Controller_Showtime } from '../showtimes.controller';
+import { Service_Showtimes } from '../showtimes.service';
 import { ConflictException, NotFoundException } from '@nestjs/common';
-import { DTO_showtime_create } from './dto/create-showtime.dto';
-import { DTO_showtime_update } from './dto/update-showtime.dto';
+import { DTO_showtime_create } from '../dto/create-showtime.dto';
+import { DTO_showtime_update } from '../dto/update-showtime.dto';
 
-const mock = {
+// requirement 3.3 done 
+
+const mock_showtime_service = {
   create: jest.fn(),
   find_all: jest.fn(),
   find_by_id: jest.fn(),
@@ -13,13 +15,13 @@ const mock = {
   remove: jest.fn(),
 };
 
-describe('ShowtimesController', () => 
+describe('Controller_Showtime', () => 
 {
 
   // -------- init --------------------------------------------------------------------
 
-  let controller: Controller_Showtime;
-  let service: Service_Showtimes;
+  let controller_showtime: Controller_Showtime;
+  let service_showtime: Service_Showtimes;
 
   // -------- before --------------------------------------------------------------------
 
@@ -29,13 +31,13 @@ describe('ShowtimesController', () =>
       providers: [
         {
           provide: Service_Showtimes,
-          useValue: mock,
+          useValue: mock_showtime_service,
         },
       ],
     }).compile();
 
-    controller = module.get<Controller_Showtime>(Controller_Showtime);
-    service = module.get<Service_Showtimes>(Service_Showtimes);
+    controller_showtime = module.get<Controller_Showtime>(Controller_Showtime);
+    service_showtime = module.get<Service_Showtimes>(Service_Showtimes);
   });
 
   // -------- after --------------------------------------------------------------------
@@ -45,7 +47,7 @@ describe('ShowtimesController', () =>
   });
 
   it('should be defined', () => {
-    expect(controller).toBeDefined();
+    expect(controller_showtime).toBeDefined();
   });
 
   // -------- create --------------------------------------------------------------------
@@ -69,10 +71,10 @@ describe('ShowtimesController', () =>
         movie: { id: 1, title: 'Test Movie' },
       };
       
-      mock.create.mockResolvedValue(expected);
+      mock_showtime_service.create.mockResolvedValue(expected);
       
-      expect(await controller.create(create_DTO)).toBe(expected);
-      expect(mock.create).toHaveBeenCalledWith(create_DTO);
+      expect(await controller_showtime.create(create_DTO)).toBe(expected);
+      expect(mock_showtime_service.create).toHaveBeenCalledWith(create_DTO);
     });
 
     it('should throw ConflictException when there are overlapping showtimes', async () => {
@@ -84,10 +86,10 @@ describe('ShowtimesController', () =>
         price: 12.99,
       };
       
-      mock.create.mockRejectedValue(new ConflictException('Showtime overlaps with existing showtime'));
+      mock_showtime_service.create.mockRejectedValue(new ConflictException('Showtime overlaps with existing showtime'));
       
-      await expect(controller.create(create_DTO)).rejects.toThrow(ConflictException);
-      expect(mock.create).toHaveBeenCalledWith(create_DTO);
+      await expect(controller_showtime.create(create_DTO)).rejects.toThrow(ConflictException);
+      expect(mock_showtime_service.create).toHaveBeenCalledWith(create_DTO);
     });
   });
 
@@ -110,10 +112,10 @@ describe('ShowtimesController', () =>
         },
       ];
       
-      mock.find_all.mockResolvedValue(expected);
+      mock_showtime_service.find_all.mockResolvedValue(expected);
       
-      expect(await controller.find_all()).toBe(expected);
-      expect(mock.find_all).toHaveBeenCalled();
+      expect(await controller_showtime.find_all()).toBe(expected);
+      expect(mock_showtime_service.find_all).toHaveBeenCalled();
     });
   });
 
@@ -129,17 +131,17 @@ describe('ShowtimesController', () =>
         price: 12.99,
       };
       
-      mock.find_by_id.mockResolvedValue(expected);
+      mock_showtime_service.find_by_id.mockResolvedValue(expected);
       
-      expect(await controller.find_by_id('1')).toBe(expected);
-      expect(mock.find_by_id).toHaveBeenCalledWith(1);
+      expect(await controller_showtime.find_by_id('1')).toBe(expected);
+      expect(mock_showtime_service.find_by_id).toHaveBeenCalledWith(1);
     });
 
     it('should throw NotFoundException when showtime does not exist', async () => {
-      mock.find_by_id.mockRejectedValue(new NotFoundException('Showtime not found'));
+      mock_showtime_service.find_by_id.mockRejectedValue(new NotFoundException('Showtime not found'));
       
-      await expect(controller.find_by_id('999')).rejects.toThrow(NotFoundException);
-      expect(mock.find_by_id).toHaveBeenCalledWith(999);
+      await expect(controller_showtime.find_by_id('999')).rejects.toThrow(NotFoundException);
+      expect(mock_showtime_service.find_by_id).toHaveBeenCalledWith(999);
     });
   });
 
@@ -163,10 +165,10 @@ describe('ShowtimesController', () =>
         price: 14.99,
       };
       
-      mock.update.mockResolvedValue(expected);
+      mock_showtime_service.update.mockResolvedValue(expected);
       
-      expect(await controller.update('1', update_DTO)).toBe(expected);
-      expect(mock.update).toHaveBeenCalledWith(1, update_DTO);
+      expect(await controller_showtime.update('1', update_DTO)).toBe(expected);
+      expect(mock_showtime_service.update).toHaveBeenCalledWith(1, update_DTO);
     });
   });
 
@@ -175,10 +177,10 @@ describe('ShowtimesController', () =>
   describe('remove', () => 
   {
     it('should remove a showtime', async () => {
-      mock.remove.mockResolvedValue(undefined);
+      mock_showtime_service.remove.mockResolvedValue(undefined);
       
-      await controller.remove('1');
-      expect(mock.remove).toHaveBeenCalledWith(1);
+      await controller_showtime.remove('1');
+      expect(mock_showtime_service.remove).toHaveBeenCalledWith(1);
     });
   });
 

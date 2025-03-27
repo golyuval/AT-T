@@ -5,12 +5,14 @@ import { Ticket } from './ticket.entity';
 import { DTO_ticket_create } from './DTO/create-ticket.dto';
 import { Service_Showtimes } from '../showtimes/showtimes.service';
 
+// requirement 2.3 done
+// requirement 3.1 done (overlapping and ID validations + informative errors)
 
 @Injectable()
 export class Service_Tickets 
 {
 
-    // -------- overlapping check ------------------------------------------------------------------------------
+    // -------- init ------------------------------------------------------------------------------
 
     constructor(
         @InjectRepository(Ticket)
@@ -18,14 +20,14 @@ export class Service_Tickets
         private showtimes_service: Service_Showtimes,
     ) {}
 
-    // -------- create -----------------------------------------------------------------------------------------
+    // -------- create (requirement 2.3) -----------------------------------------------------------------------------------------
 
     async create(create_DTO: DTO_ticket_create): Promise<Ticket> 
     {
         // showtime existence check
         await this.showtimes_service.find_by_id(create_DTO.showtime_id);
 
-        // ticket existence check
+        // booked seat check
         const ticket_exist = await this.ticket_repo.findOne({
             where: {
             showtime_id: create_DTO.showtime_id,
@@ -41,18 +43,18 @@ export class Service_Tickets
         return this.ticket_repo.save(create_DTO);
     }
 
-    // -------- remove -----------------------------------------------------------------------------------------
+    // -------- remove (additional for testability) -----------------------------------------------------------------------------------------
 
-    async remove(id: number): Promise<void> 
+    async remove(ID: number): Promise<void> 
     {
-        const result = await this.ticket_repo.delete(id);
+        const result = await this.ticket_repo.delete(ID);
 
         if (result.affected === 0) {
-            throw new NotFoundException(`Booking with ID ${id} not found`);
+            throw new NotFoundException(`Booking with ID ${ID} not found`);
         }
     }
 
-    // -------- find -------------------------------------------------------------------------------------------
+    // -------- find (additional for testability) -------------------------------------------------------------------------------------------
 
     async find_all(): Promise<Ticket[]> 
     {

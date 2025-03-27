@@ -8,6 +8,9 @@ import { DTO_showtime_create } from './DTO/create-showtime.dto';
 import { DTO_showtime_update } from './DTO/update-showtime.dto';
 import { Service_Movies } from '../movies/movies.service';
 
+// requirement 2.2 done
+// requirement 3.1 done (overlapping and ID validations + informative errors)
+
 @Injectable()
 export class Service_Showtimes 
 {
@@ -20,7 +23,7 @@ export class Service_Showtimes
         private movies_service: Service_Movies,
     ) {}
 
-    // -------- overlapping check ---------------------------------------------------------------------------------
+    // -------- overlapping check (requirement 2.2.5 - constraint) ---------------------------------------------------------------------------------
 
     private async check_overlap(theater: string, start: Date, end: Date, ID?: number, ): Promise<void> 
     {
@@ -46,25 +49,22 @@ export class Service_Showtimes
         }
     }
 
-    // -------- create --------------------------------------------------------------------------------------------
+    // -------- create (requirement 2.2.1) --------------------------------------------------------------------------------------------
 
     async create(create_DTO: DTO_showtime_create): Promise<Showtime> 
     {
-        // movie existance check
         await this.movies_service.find_by_id(create_DTO.movie_id);
 
-        // overlapping showtimes check
         await this.check_overlap(
             create_DTO.theater,
             create_DTO.start_time,
             create_DTO.end_time,
         );
 
-        // create and save
         return this.showtime_repo.save(create_DTO);
     }
 
-    // -------- remove --------------------------------------------------------------------------------------------
+    // -------- remove (requirement 2.2.3) --------------------------------------------------------------------------------------------
 
     async remove(ID: number): Promise<void> 
     {
@@ -76,7 +76,7 @@ export class Service_Showtimes
         }
     }
 
-    // -------- update --------------------------------------------------------------------------------------------
+    // -------- update (requirement 2.2.2) --------------------------------------------------------------------------------------------
 
     async update(ID: number, update_DTO: DTO_showtime_update): Promise<Showtime> 
     {
@@ -106,7 +106,7 @@ export class Service_Showtimes
         return this.showtime_repo.save(updated);
     }
 
-    // -------- find ----------------------------------------------------------------------------------------------
+    // -------- find (requirement 2.2.4) ----------------------------------------------------------------------------------------------
 
     async find_all(): Promise<Showtime[]> 
     {

@@ -1,13 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Service_Movies } from './movies.service';
+import { Service_Movies } from '../movies.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Movie } from './movie.entity';
+import { Movie } from '../movie.entity';
 import { Repository } from 'typeorm';
 
-const mockMovieRepository = () => ({
+// requirement 3.3 done 
+
+const mock_movie_repo = () => ({
   save: jest.fn(),
   find: jest.fn(),
-  find_by_id: jest.fn(),
+  findOne: jest.fn(),
   delete: jest.fn(),
   update: jest.fn(),
 });
@@ -31,7 +33,7 @@ describe('Service_Movies', () =>
         Service_Movies,
         {
           provide: getRepositoryToken(Movie),
-          useFactory: mockMovieRepository,
+          useFactory: mock_movie_repo,
         },
       ],
     }).compile();

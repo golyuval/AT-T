@@ -7,6 +7,10 @@ import { Movie } from './movie.entity';
 import { DTO_movie_create } from './DTO/create-movie.DTO';
 import { DTO_movie_update } from './DTO/update-movie.DTO';
 
+
+// requirement 2.1 done
+// requirement 3.1 done (ID validations)
+
 @Injectable()
 export class Service_Movies 
 {
@@ -18,14 +22,14 @@ export class Service_Movies
         private movie_repo: Repository<Movie>,
     ) {}
 
-    // -------- create ---------------------------------------------------------------------
+    // -------- create (requirement 2.1.1) ---------------------------------------------------------------------
 
     async create(create_DTO: DTO_movie_create): Promise<Movie> 
     {
         return this.movie_repo.save(create_DTO);
     }
     
-    // -------- remove ---------------------------------------------------------------------
+    // -------- remove (requirement 2.1.3) ---------------------------------------------------------------------
 
     async remove(ID: number): Promise<void> 
     {
@@ -37,7 +41,7 @@ export class Service_Movies
         }
     }
     
-    // -------- update ---------------------------------------------------------------------
+    // -------- update (requirement 2.1.2) ---------------------------------------------------------------------
 
     async update(ID: number, update_DTO: DTO_movie_update): Promise<Movie> 
     {
@@ -51,7 +55,7 @@ export class Service_Movies
         return this.movie_repo.save(updated);
     }
 
-    // -------- find ---------------------------------------------------------------------
+    // -------- find (requirement 2.1.4) ---------------------------------------------------------------------
 
     async find_all(): Promise<Movie[]> 
     {

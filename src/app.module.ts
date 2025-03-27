@@ -7,6 +7,8 @@ import { Module_Movies } from './movies/movies.module';
 import { Module_Showtimes } from './showtimes/showtimes.module';
 import { Modlue_Tickets } from './tickets/tickets.module';
 
+
+
 @Module({
   
   imports: [

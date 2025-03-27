@@ -1,12 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Controller_Movies } from './movies.controller';
-import { Service_Movies } from './movies.service';
+import { Controller_Movies } from '../movies.controller';
+import { Service_Movies } from '../movies.service';
 import { NotFoundException } from '@nestjs/common';
-import { DTO_movie_create } from './dto/create-movie.dto';
-import { DTO_movie_update } from './dto/update-movie.dto';
+import { DTO_movie_create } from '../dto/create-movie.dto';
+import { DTO_movie_update } from '../dto/update-movie.dto';
 
+// requirement 3.3 done 
 
-const mock_service = {
+const mock_movie_service = {
   create: jest.fn(),
   find_all: jest.fn(),
   find_by_id: jest.fn(),
@@ -32,7 +33,7 @@ describe('Controller_Movies', () =>
       providers: [
         {
           provide: Service_Movies,
-          useValue: mock_service,
+          useValue: mock_movie_service,
         },
       ],
     }).compile();
@@ -73,10 +74,10 @@ describe('Controller_Movies', () =>
         ...create_DTO,
       };
       
-      mock_service.create.mockResolvedValue(expected);
+      mock_movie_service.create.mockResolvedValue(expected);
       
       expect(await controller.create(create_DTO)).toBe(expected);
-      expect(mock_service.create).toHaveBeenCalledWith(create_DTO);
+      expect(mock_movie_service.create).toHaveBeenCalledWith(create_DTO);
 
     });
   });
@@ -105,10 +106,10 @@ describe('Controller_Movies', () =>
         },
       ];
       
-      mock_service.find_all.mockResolvedValue(expected);
+      mock_movie_service.find_all.mockResolvedValue(expected);
       
       expect(await controller.find_all()).toBe(expected);
-      expect(mock_service.find_all).toHaveBeenCalled();
+      expect(mock_movie_service.find_all).toHaveBeenCalled();
     });
   });
 
@@ -125,19 +126,19 @@ describe('Controller_Movies', () =>
         release_year: 2023,
       };
       
-      mock_service.find_by_id.mockResolvedValue(expected);
+      mock_movie_service.find_by_id.mockResolvedValue(expected);
       
       expect(await controller.find_by_id('1')).toBe(expected);
-      expect(mock_service.find_by_id).toHaveBeenCalledWith(1);
+      expect(mock_movie_service.find_by_id).toHaveBeenCalledWith(1);
 
     });
 
     it('should throw NotFoundException when movie does not exist', async () => {
 
-      mock_service.find_by_id.mockRejectedValue(new NotFoundException('Movie not found'));
+      mock_movie_service.find_by_id.mockRejectedValue(new NotFoundException('Movie not found'));
       
       await expect(controller.find_by_id('999')).rejects.toThrow(NotFoundException);
-      expect(mock_service.find_by_id).toHaveBeenCalledWith(999);
+      expect(mock_movie_service.find_by_id).toHaveBeenCalledWith(999);
 
     });
   });
@@ -161,10 +162,10 @@ describe('Controller_Movies', () =>
         release_year: 2023,
       };
       
-      mock_service.update.mockResolvedValue(expected);
+      mock_movie_service.update.mockResolvedValue(expected);
       
       expect(await controller.update('1', update_DTO)).toBe(expected);
-      expect(mock_service.update).toHaveBeenCalledWith(1, update_DTO);
+      expect(mock_movie_service.update).toHaveBeenCalledWith(1, update_DTO);
       
     });
   });
@@ -174,10 +175,10 @@ describe('Controller_Movies', () =>
   describe('remove', () => {
 
     it('should remove a movie', async () => {
-      mock_service.remove.mockResolvedValue(undefined);
+      mock_movie_service.remove.mockResolvedValue(undefined);
       
       await controller.remove('1');
-      expect(mock_service.remove).toHaveBeenCalledWith(1);
+      expect(mock_movie_service.remove).toHaveBeenCalledWith(1);
 
     });
   });
