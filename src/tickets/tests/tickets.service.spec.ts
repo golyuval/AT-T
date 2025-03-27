@@ -1,16 +1,18 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Service_Tickets } from './tickets.service';
+import { Service_Tickets } from '../tickets.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Ticket } from './ticket.entity';
+import { Ticket } from '../ticket.entity';
 import { Repository } from 'typeorm';
-import { Service_Showtimes } from '../showtimes/showtimes.service';
+import { Service_Showtimes } from '../../showtimes/showtimes.service';
 import { ConflictException, NotFoundException } from '@nestjs/common';
-import { DTO_ticket_create } from './dto/create-ticket.dto';
+import { DTO_ticket_create } from '../dto/create-ticket.dto';
 
-const mock_booking_repo = () => ({
+// requirement 3.3 done 
+
+const mock_ticket_repo = () => ({
   save: jest.fn(),
   find: jest.fn(),
-  find_by_id: jest.fn(),
+  findOne: jest.fn(),
   delete: jest.fn(),
 });
 
@@ -38,7 +40,7 @@ describe('BookingsService', () =>
         Service_Tickets,
         {
           provide: getRepositoryToken(Ticket),
-          useFactory: mock_booking_repo,
+          useFactory: mock_ticket_repo,
         },
         {
           provide: Service_Showtimes,

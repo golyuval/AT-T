@@ -1,12 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Service_Showtimes } from './showtimes.service';
+import { Service_Showtimes } from '../showtimes.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Showtime } from './showtime.entity';
+import { Showtime } from '../showtime.entity';
 import { Repository } from 'typeorm';
-import { Service_Movies } from '../movies/movies.service';
+import { Service_Movies } from '../../movies/movies.service';
 import { ConflictException, NotFoundException } from '@nestjs/common';
-import { DTO_showtime_create } from './DTO/create-showtime.dto';
+import { DTO_showtime_create } from '../DTO/create-showtime.dto';
 
+// requirement 3.3 done 
 
 const builder = {
   where: jest.fn().mockReturnThis(),
@@ -17,7 +18,7 @@ const builder = {
 const mock_showtime_repo = () => ({
   save: jest.fn(),
   find: jest.fn(),
-  find_by_id: jest.fn(),
+  findOne: jest.fn(),
   delete: jest.fn(),
   createQueryBuilder: jest.fn(() => builder),
 });

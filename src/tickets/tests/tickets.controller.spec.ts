@@ -1,8 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Controller_Tickets } from './tickets.controller';
-import { Service_Tickets } from './tickets.service';
+import { Controller_Tickets } from '../tickets.controller';
+import { Service_Tickets } from '../tickets.service';
 import { ConflictException, NotFoundException } from '@nestjs/common';
-import { DTO_ticket_create } from './dto/create-ticket.dto';
+import { DTO_ticket_create } from '../dto/create-ticket.dto';
+
+// requirement 3.3 done 
 
 const mock_ticket_service = {
   create: jest.fn(),
