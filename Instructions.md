@@ -64,4 +64,17 @@
   npm run test:e2e
   ```
 
+# Popcorn Palace API Endpoints
+
+| Method | Endpoint                             | Description               |
+| ------ | ------------------------------------ | ------------------------- |
+| POST   | /movies                              | create new movie          |
+| GET    | /movies/all                          | list all movies           |
+| POST   | /movies/update/:movieTitle           | update movie by title     |
+| DELETE | /movies/:movieTitle                  | delete movie by title     |
+| GET    | /showtimes/:showtimeId               | get showtime by id        |
+| POST   | /showtimes                           | create new showtime       |
+| POST   | /showtimes/update/:showtimeId        | update showtime by id     |
+| DELETE | /showtimes/:showtimeId               | delete showtime by id     |
+| POST   | /bookings                            | create new booking        |
 
