@@ -26,6 +26,7 @@ describe('Movies Endpoints', () =>
 
         app = testing_module.createNestApplication();
         await app.init();
+
     });
 
     // ----------- after ----------------------------------------------------------------

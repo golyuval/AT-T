@@ -33,6 +33,7 @@ describe('Showtimes Endpoints', () =>
         app = testing_module.createNestApplication();
         await app.init();
 
+
         // Create a movie to associate with the showtime tests
         await request(app.getHttpServer())
             .post('/movies')
