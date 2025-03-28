@@ -4,8 +4,10 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Ticket } from '../ticket.entity';
 import { Repository } from 'typeorm';
 import { Service_Showtimes } from '../../showtimes/showtimes.service';
-import { ConflictException, NotFoundException } from '@nestjs/common';
+import { ConflictException, NotFoundException, BadRequestException } from '@nestjs/common';
 import { DTO_ticket_create } from '../dto/create-ticket.dto';
+
+
 
 // requirement 3.3 done 
 
@@ -244,4 +246,26 @@ describe('BookingsService', () =>
       expect(ticket_repo.delete).toHaveBeenCalledWith(ticket_ID);
     });
   });
+
+
+  // -------- edge cases --------------------------------------------------------------------
+
+  describe('Edge Cases', () => {
+    it('should throw BadRequestException if create DTO is empty', async () => {
+      await expect(ticket_service.create({} as DTO_ticket_create)).rejects.toThrow(BadRequestException);
+    });
+
+    it('should throw BadRequestException for find_by_id with invalid id (0)', async () => {
+      await expect(ticket_service.find_by_id(0)).rejects.toThrow(BadRequestException);
+    });
+
+    it('should throw BadRequestException for remove with invalid id (-1)', async () => {
+      await expect(ticket_service.remove(-1)).rejects.toThrow(BadRequestException);
+    });
+
+    it('should throw BadRequestException for find_by_showtime with invalid id (0)', async () => {
+      await expect(ticket_service.find_by_showtime(0)).rejects.toThrow(BadRequestException);
+    });
+  });
+
 });

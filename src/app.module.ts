@@ -1,20 +1,14 @@
+// File: app.module.ts
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-
 import { Module_Movies } from './movies/movies.module';
 import { Module_Showtimes } from './showtimes/showtimes.module';
-import { Modlue_Tickets } from './tickets/tickets.module';
-
-
+import { Module_Tickets } from './tickets/tickets.module';
 
 @Module({
-  
   imports: [
-
-    // --------- ORM -------------------------------------------
-
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
@@ -24,20 +18,14 @@ import { Modlue_Tickets } from './tickets/tickets.module';
       database: 'popcorn-palace',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
-      logging: true, // Enable logging to see connection details
-      connectTimeoutMS: 5000, //  timeout
+      logging: process.env.NODE_ENV !== 'test', // disable logging during tests
+      connectTimeoutMS: 5000,
     }),
-
-    // --------- our modules -------------------------------------------
-
     Module_Movies,
     Module_Showtimes,
-    Modlue_Tickets,
+    Module_Tickets,
   ],
-
   controllers: [AppController],
-  
   providers: [AppService],
-  
 })
 export class AppModule {}

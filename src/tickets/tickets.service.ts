@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Ticket } from './ticket.entity';
@@ -7,6 +7,18 @@ import { Service_Showtimes } from '../showtimes/showtimes.service';
 
 // requirement 2.3 done
 // requirement 3.1 done (overlapping and ID validations + informative errors)
+
+function validateId(id: number): void {
+    if (!id || id <= 0) {
+      throw new BadRequestException('Invalid ticket ID provided.');
+    }
+}
+  
+function validateDto(dto: any, errorMessage: string): void {
+    if (!dto || Object.keys(dto).length === 0) {
+        throw new BadRequestException(errorMessage);
+    }
+}
 
 @Injectable()
 export class Service_Tickets 
@@ -24,6 +36,8 @@ export class Service_Tickets
 
     async create(create_DTO: DTO_ticket_create): Promise<Ticket> 
     {
+        validateDto(create_DTO, 'Ticket data must not be empty.');
+
         // showtime existence check
         await this.showtimes_service.find_by_id(create_DTO.showtime_id);
 
@@ -47,6 +61,7 @@ export class Service_Tickets
 
     async remove(ID: number): Promise<void> 
     {
+        validateId(ID);
         const result = await this.ticket_repo.delete(ID);
 
         if (result.affected === 0) {
@@ -63,6 +78,7 @@ export class Service_Tickets
 
     async find_by_id(id: number): Promise<Ticket> 
     {
+        validateId(id);
         const ticket = await this.ticket_repo.findOne({ where: { id } });
         
         if (!ticket) 
@@ -75,6 +91,7 @@ export class Service_Tickets
 
     async find_by_showtime(showtime_ID: number): Promise<Ticket[]> 
     {
+        validateId(showtime_ID);
         return this.ticket_repo.find({
             where: { showtime_id: showtime_ID },
         });

@@ -1,5 +1,5 @@
 
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -11,6 +11,20 @@ import { Service_Movies } from '../movies/movies.service';
 // requirement 2.2 done
 // requirement 3.1 done (overlapping and ID validations + informative errors)
 
+
+function validate_ID(id: number): void {
+    if (!id || id <= 0) {
+      throw new BadRequestException('Invalid showtime ID provided.');
+    }
+}
+  
+function validate_DTO(dto: any, errorMessage: string): void {
+    if (!dto || Object.keys(dto).length === 0) {
+      throw new BadRequestException(errorMessage);
+    }
+}
+
+  
 @Injectable()
 export class Service_Showtimes 
 {
@@ -53,6 +67,7 @@ export class Service_Showtimes
 
     async create(create_DTO: DTO_showtime_create): Promise<Showtime> 
     {
+        validate_DTO(create_DTO, 'Showtime data must not be empty.');
         await this.movies_service.find_by_id(create_DTO.movie_id);
 
         await this.check_overlap(
@@ -68,6 +83,7 @@ export class Service_Showtimes
 
     async remove(ID: number): Promise<void> 
     {
+        validate_ID(ID);
         const result = await this.showtime_repo.delete(ID);
     
         if (result.affected === 0) 
@@ -80,6 +96,8 @@ export class Service_Showtimes
 
     async update(ID: number, update_DTO: DTO_showtime_update): Promise<Showtime> 
     {
+        validate_ID(ID);
+        validate_DTO(update_DTO, 'Showtime data must not be empty.');
         const showtime = await this.find_by_id(ID);
 
         // movie existance check
@@ -115,6 +133,7 @@ export class Service_Showtimes
 
     async find_by_id(ID: number): Promise<Showtime> 
     {
+        validate_ID(ID);
         const showtime = await this.showtime_repo.findOne({ where: { id: ID } });
         
         if (!showtime) 
