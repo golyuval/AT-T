@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, HttpStatus, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, HttpCode, HttpStatus, ValidationPipe } from '@nestjs/common';
 import { Service_Showtimes } from './showtimes.service';
 import { DTO_showtime_create } from './DTO/create-showtime.dto';
 import { DTO_showtime_update } from './DTO/update-showtime.dto';
@@ -7,47 +7,40 @@ import { DTO_showtime_update } from './DTO/update-showtime.dto';
 export class Controller_Showtime 
 {
 
-    // -------- constructor ---------------------------------------------------------------------
+    // ------ constructor --------------------------------------------------------------
 
     constructor(private readonly showtimes_service: Service_Showtimes) {}
-    
-    // -------- post ---------------------------------------------------------------------
+
+    // ------ GET /showtimes/{showtimeId} -- ( get showtime by ID ) -----------------------------------
+
+    @Get(':showtimeId')
+    find_by_id(@Param('showtimeId') showtimeId: string) {
+        return this.showtimes_service.find_by_id(+showtimeId);
+    }
+
+    // ------ POST /showtimes -- ( add showtime ) -----------------------------------
 
     @Post()
-    create(@Body(ValidationPipe) create_DTO: DTO_showtime_create) 
-    {
+    create(@Body(ValidationPipe) create_DTO: DTO_showtime_create) {
         return this.showtimes_service.create(create_DTO);
     }
 
-    // -------- get ---------------------------------------------------------------------
+    // ------ POST /showtimes/update/{showtimeId} -- ( update showtime by ID ) -----------------------------------
 
-    @Get()
-    find_all() 
-    {
-        return this.showtimes_service.find_all();
+    @Post('update/:showtimeId')
+    update(
+        @Param('showtimeId') showtimeId: string,
+        @Body(ValidationPipe) update_DTO: DTO_showtime_update,
+    ) {
+        return this.showtimes_service.update(+showtimeId, update_DTO);
     }
 
-    @Get(':id')
-    find_by_id(@Param('id') ID: string) 
-    {
-        return this.showtimes_service.find_by_id(+ID);
-    }
+    // ------ DELETE /showtimes/{showtimeId} -- ( get all movies ) -----------------------------------
 
-    // -------- patch ---------------------------------------------------------------------
-
-    @Patch(':id')
-    update(@Param('id') ID: string, @Body(ValidationPipe) update_DTO: DTO_showtime_update) 
-    {
-        return this.showtimes_service.update(+ID, update_DTO);
-    }
-
-    // -------- delete ---------------------------------------------------------------------
-
-    @Delete(':id')
-    @HttpCode(HttpStatus.NO_CONTENT)
-    remove(@Param('id') ID: string) 
-    {
-        return this.showtimes_service.remove(+ID);
+    @Delete(':showtimeId')
+    @HttpCode(HttpStatus.OK)
+    remove(@Param('showtimeId') showtimeId: string) {
+        return this.showtimes_service.remove(+showtimeId);
     }
 
 }

@@ -45,9 +45,9 @@ export class Service_Showtimes
         const queryBuilder = this.showtime_repo.createQueryBuilder('showtime')
             .where('showtime.theater = :theater', { theater })
             .andWhere(
-            '((:startTime >= showtime.start_time AND :startTime < showtime.end_time) OR ' +
-            '(:endTime > showtime.start_time AND :endTime <= showtime.end_time) OR ' +
-            '(:startTime <= showtime.start_time AND :endTime >= showtime.end_time))',
+            '((:startTime >= showtime.startTime AND :startTime < showtime.endTime) OR ' +
+            '(:endTime > showtime.startTime AND :endTime <= showtime.endTime) OR ' +
+            '(:startTime <= showtime.startTime AND :endTime >= showtime.endTime))',
             { startTime: start, endTime: end });
             
         if (ID) 
@@ -68,12 +68,12 @@ export class Service_Showtimes
     async create(create_DTO: DTO_showtime_create): Promise<Showtime> 
     {
         validate_DTO(create_DTO, 'Showtime data must not be empty.');
-        await this.movies_service.find_by_id(create_DTO.movie_id);
+        await this.movies_service.find_by_id(create_DTO.movieId);
 
         await this.check_overlap(
             create_DTO.theater,
-            create_DTO.start_time,
-            create_DTO.end_time,
+            create_DTO.startTime,
+            create_DTO.endTime,
         );
 
         return this.showtime_repo.save(create_DTO);
@@ -101,17 +101,17 @@ export class Service_Showtimes
         const showtime = await this.find_by_id(ID);
 
         // movie existance check
-        if (update_DTO.movie_id && update_DTO.movie_id !== showtime.movie_id) {
-            await this.movies_service.find_by_id(update_DTO.movie_id);
+        if (update_DTO.movieId && update_DTO.movieId !== showtime.movieId) {
+            await this.movies_service.find_by_id(update_DTO.movieId);
         }
 
         // overlap showtime check (if field updated)
-        if (update_DTO.theater || update_DTO.start_time || update_DTO.end_time) 
+        if (update_DTO.theater || update_DTO.startTime || update_DTO.endTime) 
         {
             await this.check_overlap(
             update_DTO.theater || showtime.theater,
-            update_DTO.start_time || showtime.start_time,
-            update_DTO.end_time || showtime.end_time,
+            update_DTO.startTime || showtime.startTime,
+            update_DTO.endTime || showtime.endTime,
             ID, );
         }
 

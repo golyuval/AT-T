@@ -4,6 +4,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Movie } from '../movie.entity';
 import { Repository } from 'typeorm';
 import { BadRequestException } from '@nestjs/common';
+import { DTO_movie_update } from '../DTO/update-movie.DTO';
 
 // requirement 3.3 done 
 
@@ -55,8 +56,8 @@ describe('Service_Movies', () =>
         title: 'Test Movie',
         genre: 'Action',
         duration: 120,
-        rating: 'PG-13',
-        release_year: 2023,
+        rating: 8.7,
+        releaseYear: 2023,
       };
       
       const savedMovie = {
@@ -85,16 +86,16 @@ describe('Service_Movies', () =>
           title: 'Test Movie 1',
           genre: 'Action',
           duration: 120,
-          rating: 'PG-13',
-          release_year: 2023,
+          rating: 8.7,
+          releaseYear: 2023,
         },
         {
           id: 2,
           title: 'Test Movie 2',
           genre: 'Comedy',
           duration: 90,
-          rating: 'PG',
-          release_year: 2022,
+          rating: 7.0,
+          releaseYear: 2022,
         },
       ];
       
@@ -116,8 +117,8 @@ describe('Service_Movies', () =>
         title: 'Test Movie',
         genre: 'Action',
         duration: 120,
-        rating: 'PG-13',
-        release_year: 2023,
+        rating: 8.7,
+        releaseYear: 2023,
       };
       
       movie_repo.findOne.mockResolvedValue(movie);
@@ -126,62 +127,6 @@ describe('Service_Movies', () =>
       
       expect(movie_repo.findOne).toHaveBeenCalledWith({ where: { id: 1 } });
       expect(result).toEqual(movie);
-    });
-  });
-
-  // -------- update --------------------------------------------------------------------
-
-  describe('update', () => 
-  {
-    it('should update a movie', async () => 
-    {
-      const movie_ID = 1;
-      const update_DTO = 
-      {
-        title: 'Updated Movie',
-        genre: 'Drama',
-      };
-      
-      const exist = 
-      {
-        id: movie_ID,
-        title: 'Test Movie',
-        genre: 'Action',
-        duration: 120,
-        rating: 'PG-13',
-        release_year: 2023,
-      };
-      
-      const updated = {
-        ...exist,
-        ...update_DTO,
-      };
-      
-      movie_repo.findOne.mockResolvedValue(exist);
-      movie_repo.save.mockResolvedValue(updated);
-      
-      const result = await service.update(movie_ID, update_DTO);
-      
-      expect(movie_repo.findOne).toHaveBeenCalledWith({ where: { id: movie_ID } });
-      expect(movie_repo.save).toHaveBeenCalledWith(updated);
-      expect(result).toEqual(updated);
-    });
-  });
-
-  // -------- remove --------------------------------------------------------------------
-
-  describe('remove', () => 
-  {
-    it('should delete a movie by id', async () => 
-    {
-      const movie_ID = 1;
-      const deleteResult = { affected: 1 };
-      
-      movie_repo.delete.mockResolvedValue(deleteResult);
-      
-      await service.remove(movie_ID);
-      
-      expect(movie_repo.delete).toHaveBeenCalledWith(movie_ID);
     });
   });
 
@@ -195,28 +140,52 @@ describe('Service_Movies', () =>
     it('should throw BadRequestException for find_by_id with invalid id (0)', async () => {
       await expect(service.find_by_id(0)).rejects.toThrow(BadRequestException);
     });
-
-    it('should throw BadRequestException for update with invalid id (0)', async () => {
-      await expect(service.update(0, { title: 'New Title' } as any)).rejects.toThrow(BadRequestException);
-    });
-
-    it('should throw BadRequestException if update DTO is empty', async () => {
-      // Stub find_by_id to return a valid movie so that update proceeds to DTO check
-      const existingMovie = {
+  });
+  
+  // -------- find_by_title --------------------------------------------------------------------
+  
+  describe('find_by_title', () => {
+    it('should return a movie by title', async () => {
+      const movie = {
         id: 1,
         title: 'Test Movie',
         genre: 'Action',
         duration: 120,
-        rating: 'PG-13',
-        release_year: 2023,
+        rating: 8.7,
+        releaseYear: 2023,
       };
-      movie_repo.findOne.mockResolvedValue(existingMovie);
-      
-      await expect(service.update(1, {} as any)).rejects.toThrow(BadRequestException);
+      movie_repo.findOne.mockResolvedValue(movie);
+      const result = await service.find_by_title('Test Movie');
+      expect(movie_repo.findOne).toHaveBeenCalledWith({ where: { title: 'Test Movie' } });
+      expect(result).toEqual(movie);
     });
-
-    it('should throw BadRequestException for remove with invalid id (-1)', async () => {
-      await expect(service.remove(-1)).rejects.toThrow(BadRequestException);
+    it('should throw NotFoundException if movie not found by title', async () => {
+      movie_repo.findOne.mockResolvedValue(null);
+      await expect(service.find_by_title('Nonexistent')).rejects.toThrow();
+      expect(movie_repo.findOne).toHaveBeenCalledWith({ where: { title: 'Nonexistent' } });
+    });
+  });
+  
+  // -------- update_by_title --------------------------------------------------------------------
+  
+  describe('update_by_title', () => {
+    it('should update a movie by title', async () => {
+      const update_DTO: DTO_movie_update = { genre: 'Sci-Fi' };
+      const movie = {
+        id: 1,
+        title: 'Test Movie',
+        genre: 'Action',
+        duration: 120,
+        rating: 8.7,
+        releaseYear: 2023,
+      };
+      const updated = { ...movie, ...update_DTO };
+      movie_repo.findOne.mockResolvedValue(movie);
+      movie_repo.save.mockResolvedValue(updated);
+      const result = await service.update_by_title('Test Movie', update_DTO);
+      expect(movie_repo.findOne).toHaveBeenCalledWith({ where: { title: 'Test Movie' } });
+      expect(movie_repo.save).toHaveBeenCalledWith(updated);
+      expect(result).toEqual(updated);
     });
   });
 

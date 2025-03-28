@@ -1,7 +1,7 @@
 
 # Popcorn Palace – NestJS Backend
 
-**Popcorn Palace** is a movie ticket booking system built with [NestJS](https://docs.nestjs.com/) and TypeScript.
+**Popcorn Palace** is a movie booking booking system built with [NestJS](https://docs.nestjs.com/) and TypeScript.
 
 ### **Movie Management**
 - Create, read, update, and delete movies.  
@@ -10,8 +10,8 @@
 - Create, read, update, and delete showtimes.
 - ensuring no overlapping showtimes in the same theater.  
 
-### **Ticket Booking**
-- Book tickets for specific showtimes
+### **Booking Booking**
+- Book bookings for specific showtimes
 - Ensure seats aren’t double-booked.
 
 ## Setup

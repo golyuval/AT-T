@@ -74,18 +74,22 @@ describe('ShowtimesService', () =>
   {
     it('should successfully create a showtime if movie exists and no conflicts', async () => {
       
-      const movie = { id: 1, title: 'Test Movie', duration: 120, genre: 'Action', rating: 'PG-13', release_year: 2023 };
+      const movie = { id: 1, title: 'Test Movie', duration: 120, genre: 'Action', rating: 8.7, releaseYear: 2023 };
       const create_DTO: DTO_showtime_create = {
-        movie_id: 1,
+        movieId: 1,
         theater: 'Theater 1',
-        start_time: new Date('2023-01-01T10:00:00Z'),
-        end_time: new Date('2023-01-01T12:00:00Z'),
+        startTime: new Date('2023-01-01T10:00:00Z'),
+        endTime: new Date('2023-01-01T12:00:00Z'),
         price: 12.99,
       };
       
       const saved = {
         id: 1,
-        ...create_DTO,
+        movieId: create_DTO.movieId,
+        theater: create_DTO.theater,
+        startTime: create_DTO.startTime,
+        endTime: create_DTO.endTime,
+        price: 12.99,
         movie,
       };
 
@@ -95,20 +99,20 @@ describe('ShowtimesService', () =>
       
       const result = await service.create(create_DTO);
       
-      expect(movie_service.find_by_id).toHaveBeenCalledWith(create_DTO.movie_id);
+      expect(movie_service.find_by_id).toHaveBeenCalledWith(create_DTO.movieId);
       expect(builder.getMany).toHaveBeenCalled();
-      expect(showtime_repo.save).toHaveBeenCalled();
+      expect(showtime_repo.save).toHaveBeenCalledWith(create_DTO);
       expect(result).toEqual(saved);
     });
 
     it('should throw ConflictException if there are overlapping showtimes', async () => {
 
-      const movie = { id: 1, title: 'Test Movie', duration: 120, genre: 'Action', rating: 'PG-13', release_year: 2023 };
+      const movie = { id: 1, title: 'Test Movie', duration: 120, genre: 'Action', rating: 8.7, releaseYear: 2023 };
       const createShowtimeDto: DTO_showtime_create = {
-        movie_id: 1,
+        movieId: 1,
         theater: 'Theater 1',
-        start_time: new Date('2023-01-01T10:00:00Z'),
-        end_time: new Date('2023-01-01T12:00:00Z'),
+        startTime: new Date('2023-01-01T10:00:00Z'),
+        endTime: new Date('2023-01-01T12:00:00Z'),
         price: 12.99,
       };
       
@@ -116,15 +120,15 @@ describe('ShowtimesService', () =>
         { 
           id: 2, 
           theater: 'Theater 1',
-          start_time: new Date('2023-01-01T11:00:00Z'),
-          end_time: new Date('2023-01-01T13:00:00Z'),
+          startTime: new Date('2023-01-01T11:00:00Z'),
+          endTime: new Date('2023-01-01T13:00:00Z'),
         },
       ]);
       
       movie_service.find_by_id.mockResolvedValue(movie);
       
       await expect(service.create(createShowtimeDto)).rejects.toThrow(ConflictException);
-      expect(movie_service.find_by_id).toHaveBeenCalledWith(createShowtimeDto.movie_id);
+      expect(movie_service.find_by_id).toHaveBeenCalledWith(createShowtimeDto.movieId);
       expect(builder.getMany).toHaveBeenCalled();
       expect(showtime_repo.save).not.toHaveBeenCalled();
     });
@@ -139,11 +143,11 @@ describe('ShowtimesService', () =>
       const showtimes = [
         {
           id: 1,
-          movie_id: 1,
+          movieId: 1,
           movie: { id: 1, title: 'Test Movie' },
           theater: 'Theater 1',
-          start_time: new Date('2023-01-01T10:00:00Z'),
-          end_time: new Date('2023-01-01T12:00:00Z'),
+          startTime: new Date('2023-01-01T10:00:00Z'),
+          endTime: new Date('2023-01-01T12:00:00Z'),
           price: 12.99,
         },
       ];
@@ -163,11 +167,11 @@ describe('ShowtimesService', () =>
     {
       const showtime = {
         id: 1,
-        movie_id: 1,
+        movieId: 1,
         movie: { id: 1, title: 'Test Movie' },
         theater: 'Theater 1',
-        start_time: new Date('2023-01-01T10:00:00Z'),
-        end_time: new Date('2023-01-01T12:00:00Z'),
+        startTime: new Date('2023-01-01T10:00:00Z'),
+        endTime: new Date('2023-01-01T12:00:00Z'),
         price: 12.99,
       };
       
@@ -196,11 +200,11 @@ describe('ShowtimesService', () =>
       const showtime_ID = 1;
       const existing_showtime = {
         id: showtime_ID,
-        movie_id: 1,
+        movieId: 1,
         movie: { id: 1, title: 'Test Movie' },
         theater: 'Theater 1',
-        start_time: new Date('2023-01-01T10:00:00Z'),
-        end_time: new Date('2023-01-01T12:00:00Z'),
+        startTime: new Date('2023-01-01T10:00:00Z'),
+        endTime: new Date('2023-01-01T12:00:00Z'),
         price: 12.99,
       };
       
@@ -222,7 +226,35 @@ describe('ShowtimesService', () =>
       
       expect(showtime_repo.findOne).toHaveBeenCalledWith({ where: { id: showtime_ID } });
       expect(builder.getMany).toHaveBeenCalled();
-      expect(showtime_repo.save).toHaveBeenCalled();
+      expect(showtime_repo.save).toHaveBeenCalledWith(updated);
+      expect(result).toEqual(updated);
+    });
+    
+    it('should call movies_service.find_by_id if update_DTO.movieId is provided and different from existing', async () => {
+      const showtime_ID = 1;
+      const existing_showtime = {
+        id: showtime_ID,
+        movieId: 1,
+        movie: { id: 1, title: 'Test Movie' },
+        theater: 'Theater 1',
+        startTime: new Date('2023-01-01T10:00:00Z'),
+        endTime: new Date('2023-01-01T12:00:00Z'),
+        price: 12.99,
+      };
+      const update_DTO = {
+        movieId: 2,
+      };
+      const updated = {
+        ...existing_showtime,
+        movieId: 2,
+        ...update_DTO,
+      };
+      movie_service.find_by_id.mockResolvedValue({ id: 2 });
+      showtime_repo.findOne.mockResolvedValue(existing_showtime);
+      showtime_repo.save.mockResolvedValue(updated);
+      const result = await service.update(showtime_ID, update_DTO);
+      expect(movie_service.find_by_id).toHaveBeenCalledWith(2);
+      expect(showtime_repo.save).toHaveBeenCalledWith(updated);
       expect(result).toEqual(updated);
     });
   });
@@ -275,11 +307,11 @@ describe('ShowtimesService', () =>
       // Stub find_by_id to return an existing showtime so update proceeds to DTO check
       const existingShowtime = {
         id: 1,
-        movie_id: 1,
+        movieId: 1,
         movie: { id: 1, title: 'Test Movie' },
         theater: 'Theater 1',
-        start_time: new Date('2023-01-01T10:00:00Z'),
-        end_time: new Date('2023-01-01T12:00:00Z'),
+        startTime: new Date('2023-01-01T10:00:00Z'),
+        endTime: new Date('2023-01-01T12:00:00Z'),
         price: 12.99,
       };
       showtime_repo.findOne.mockResolvedValue(existingShowtime);

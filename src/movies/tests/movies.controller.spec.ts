@@ -13,6 +13,8 @@ const mock_movie_service = {
   find_by_id: jest.fn(),
   update: jest.fn(),
   remove: jest.fn(),
+  remove_by_title: jest.fn(),
+  update_by_title: jest.fn(),
 };
 
 describe('Controller_Movies', () => 
@@ -65,8 +67,8 @@ describe('Controller_Movies', () =>
         title: 'Test Movie',
         genre: 'Action',
         duration: 120,
-        rating: 'PG-13',
-        release_year: 2023,
+        rating: 8.7,
+        releaseYear: 2023,
       };
       
       const expected = {
@@ -93,16 +95,16 @@ describe('Controller_Movies', () =>
           title: 'Test Movie 1',
           genre: 'Action',
           duration: 120,
-          rating: 'PG-13',
-          release_year: 2023,
+          rating: 8.7,
+          releaseYear: 2023,
         },
         {
           id: 2,
           title: 'Test Movie 2',
           genre: 'Comedy',
           duration: 90,
-          rating: 'PG',
-          release_year: 2022,
+          rating: 7.0,
+          releaseYear: 2022,
         },
       ];
       
@@ -113,73 +115,34 @@ describe('Controller_Movies', () =>
     });
   });
 
-  describe('find_by_id', () => {
-
-    it('should return a single movie', async () => {
-
-      const expected = {
-        id: 1,
-        title: 'Test Movie',
-        genre: 'Action',
-        duration: 120,
-        rating: 'PG-13',
-        release_year: 2023,
-      };
-      
-      mock_movie_service.find_by_id.mockResolvedValue(expected);
-      
-      expect(await controller.find_by_id('1')).toBe(expected);
-      expect(mock_movie_service.find_by_id).toHaveBeenCalledWith(1);
-
-    });
-
-    it('should throw NotFoundException when movie does not exist', async () => {
-
-      mock_movie_service.find_by_id.mockRejectedValue(new NotFoundException('Movie not found'));
-      
-      await expect(controller.find_by_id('999')).rejects.toThrow(NotFoundException);
-      expect(mock_movie_service.find_by_id).toHaveBeenCalledWith(999);
-
-    });
-  });
-
-  // -------- update --------------------------------------------------------------------
-
-  describe('update', () => {
-
-    it('should update a movie', async () => {
-      const update_DTO: DTO_movie_update = {
-        genre: 'Drama',
-        duration: 130,
-      };
-      
-      const expected = {
-        id: 1,
-        title: 'Test Movie',
-        genre: 'Drama',
-        duration: 130,
-        rating: 'PG-13',
-        release_year: 2023,
-      };
-      
-      mock_movie_service.update.mockResolvedValue(expected);
-      
-      expect(await controller.update('1', update_DTO)).toBe(expected);
-      expect(mock_movie_service.update).toHaveBeenCalledWith(1, update_DTO);
-      
-    });
-  });
-
-  // -------- remove --------------------------------------------------------------------
+  // -------- update_by_title --------------------------------------------------------------------
   
-  describe('remove', () => {
-
-    it('should remove a movie', async () => {
-      mock_movie_service.remove.mockResolvedValue(undefined);
-      
-      await controller.remove('1');
-      expect(mock_movie_service.remove).toHaveBeenCalledWith(1);
-
+  describe('update_by_title', () => {
+    it('should update a movie by title', async () => {
+      const updateDto: DTO_movie_update = {
+        genre: 'Sci-Fi',
+      };
+      const expected = {
+        id: 1,
+        title: 'Test Movie',
+        genre: 'Sci-Fi',
+        duration: 120,
+        rating: 8.7,
+        releaseYear: 2023,
+      };
+      mock_movie_service.update_by_title = jest.fn().mockResolvedValue(expected);
+      expect(await controller.update_by_title('Test Movie', updateDto)).toBe(expected);
+      expect(mock_movie_service.update_by_title).toHaveBeenCalledWith('Test Movie', updateDto);
+    });
+  });
+  
+  // -------- delete_by_title --------------------------------------------------------------------
+  
+  describe('delete_by_title', () => {
+    it('should delete a movie by title', async () => {
+      mock_movie_service.remove_by_title = jest.fn().mockResolvedValue(undefined);
+      await controller.remove_by_title('Test Movie');
+      expect(mock_movie_service.remove_by_title).toHaveBeenCalledWith('Test Movie');
     });
   });
 
