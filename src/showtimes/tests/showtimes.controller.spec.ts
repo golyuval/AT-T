@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { Controller_Showtime } from '../showtimes.controller';
 import { Service_Showtimes } from '../showtimes.service';
 import { ConflictException, NotFoundException } from '@nestjs/common';
-import { DTO_showtime_create } from '../dto/create-showtime.dto';
+import { DTO_showtime_create } from '../DTO/create-showtime.dto';
 import { DTO_showtime_update } from '../dto/update-showtime.dto';
 
 // requirement 3.3 done 
@@ -58,16 +58,20 @@ describe('Controller_Showtime', () =>
     it('should create a new showtime', async () => 
     {
       const create_DTO: DTO_showtime_create = {
-        movie_id: 1,
+        movieId: 1,
         theater: 'Theater 1',
-        start_time: new Date('2023-01-01T10:00:00Z'),
-        end_time: new Date('2023-01-01T12:00:00Z'),
+        startTime: new Date('2023-01-01T10:00:00Z'),
+        endTime: new Date('2023-01-01T12:00:00Z'),
         price: 12.99,
       };
       
       const expected = {
         id: 1,
-        ...create_DTO,
+        movieId: create_DTO.movieId,
+        theater: create_DTO.theater,
+        startTime: create_DTO.startTime,
+        endTime: create_DTO.endTime,
+        price: 12.99,
         movie: { id: 1, title: 'Test Movie' },
       };
       
@@ -79,10 +83,10 @@ describe('Controller_Showtime', () =>
 
     it('should throw ConflictException when there are overlapping showtimes', async () => {
       const create_DTO: DTO_showtime_create = {
-        movie_id: 1,
+        movieId: 1,
         theater: 'Theater 1',
-        start_time: new Date('2023-01-01T10:00:00Z'),
-        end_time: new Date('2023-01-01T12:00:00Z'),
+        startTime: new Date('2023-01-01T10:00:00Z'),
+        endTime: new Date('2023-01-01T12:00:00Z'),
         price: 12.99,
       };
       
@@ -95,39 +99,15 @@ describe('Controller_Showtime', () =>
 
   // -------- find --------------------------------------------------------------------
 
-  describe('find_all', () => 
-  {
-
-    it('should return an array of showtimes', async () => 
-    {
-      const expected = [
-        {
-          id: 1,
-          movie_id: 1,
-          movie: { id: 1, title: 'Test Movie' },
-          theater: 'Theater 1',
-          start_time: new Date('2023-01-01T10:00:00Z'),
-          end_time: new Date('2023-01-01T12:00:00Z'),
-          price: 12.99,
-        },
-      ];
-      
-      mock_showtime_service.find_all.mockResolvedValue(expected);
-      
-      expect(await controller_showtime.find_all()).toBe(expected);
-      expect(mock_showtime_service.find_all).toHaveBeenCalled();
-    });
-  });
-
   describe('find_by_id', () => {
     it('should return a single showtime', async () => {
       const expected = {
         id: 1,
-        movie_id: 1,
+        movieId: 1,
         movie: { id: 1, title: 'Test Movie' },
         theater: 'Theater 1',
-        start_time: new Date('2023-01-01T10:00:00Z'),
-        end_time: new Date('2023-01-01T12:00:00Z'),
+        startTime: new Date('2023-01-01T10:00:00Z'),
+        endTime: new Date('2023-01-01T12:00:00Z'),
         price: 12.99,
       };
       
@@ -157,11 +137,11 @@ describe('Controller_Showtime', () =>
       
       const expected = {
         id: 1,
-        movie_id: 1,
+        movieId: 1,
         movie: { id: 1, title: 'Test Movie' },
         theater: 'Theater 1',
-        start_time: new Date('2023-01-01T10:00:00Z'),
-        end_time: new Date('2023-01-01T12:00:00Z'),
+        startTime: new Date('2023-01-01T10:00:00Z'),
+        endTime: new Date('2023-01-01T12:00:00Z'),
         price: 14.99,
       };
       

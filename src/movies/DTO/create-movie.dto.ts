@@ -1,4 +1,4 @@
-import { IsString, IsInt, IsNotEmpty, Min, Max, MinLength, MaxLength } from 'class-validator';
+import { IsString, IsInt, IsNotEmpty, Min, Max, MinLength, MaxLength, IsNumber } from 'class-validator';
 
 export class DTO_movie_create 
 {
@@ -22,14 +22,12 @@ export class DTO_movie_create
   duration: number;
 
   @IsNotEmpty()
-  @IsString()
-  @MinLength(1)
-  @MaxLength(10)
-  rating: string;
+  @IsNumber()
+  rating: number;
 
   @IsNotEmpty()
   @IsInt()
   @Min(1900)
   @Max(2100)
-  release_year: number;
+  releaseYear: number;
 }

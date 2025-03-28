@@ -1,4 +1,4 @@
-import { IsString, IsInt, IsOptional, Min, Max, MinLength, MaxLength } from 'class-validator';
+import { IsString, IsInt, IsOptional, Min, Max, MinLength, MaxLength, IsNumber } from 'class-validator';
 
 export class DTO_movie_update 
 {
@@ -22,15 +22,13 @@ export class DTO_movie_update
   duration?: number;
 
   @IsOptional()
-  @IsString()
-  @MinLength(1)
-  @MaxLength(10)
-  rating?: string;
+  @IsNumber()
+  rating?: number;
 
   @IsOptional()
   @IsInt()
   @Min(1900)
   @Max(2100)
-  release_year?: number;
+  releaseYear?: number;
   
 }

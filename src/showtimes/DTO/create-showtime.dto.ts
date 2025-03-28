@@ -7,7 +7,12 @@ export class DTO_showtime_create
   @IsNotEmpty()
   @IsNumber()
   @IsPositive()
-  movie_id: number;
+  movieId: number;
+
+  @IsNotEmpty()
+  @IsNumber()
+  @Min(0)
+  price: number;
 
   @IsNotEmpty()
   @IsString()
@@ -16,15 +21,11 @@ export class DTO_showtime_create
   @IsNotEmpty()
   @Type(() => Date)
   @IsDate()
-  start_time: Date;
+  startTime: Date;
 
   @IsNotEmpty()
   @Type(() => Date)
   @IsDate()
-  end_time: Date;
-
-  @IsNotEmpty()
-  @IsNumber()
-  @Min(0)
-  price: number;
+  endTime: Date;
+  
 }

@@ -44,34 +44,25 @@ export class Service_Movies
     }
     
     // -------- remove (requirement 2.1.3) ---------------------------------------------------------------------
+    
+    async remove_by_title(title: string): Promise<void> {
 
-    async remove(ID: number): Promise<void> 
-    {
-        validate_ID(ID);
-        const result = await this.movie_repo.delete(ID);
-        
-        if (result.affected === 0) 
-        {
-            throw new NotFoundException(`movie (ID ${ID}) not found`);
-        }
+        const movie = await this.find_by_title(title);
+        await this.movie_repo.delete(movie.id);
     }
+      
     
     // -------- update (requirement 2.1.2) ---------------------------------------------------------------------
 
-    async update(ID: number, update_DTO: DTO_movie_update): Promise<Movie> 
-    {
-        validate_ID(ID);
-        validate_DTO(update_DTO, 'No update data was provided.');
+    async update_by_title(title: string, update_DTO: DTO_movie_update): Promise<Movie> {
 
-        const movie = await this.find_by_id(ID);
-        
-        const updated = {
-        ...movie,
-        ...update_DTO,
-        };
-        
+        validate_DTO(update_DTO, "data must not be empty")
+        const movie = await this.find_by_title(title);
+        const updated = { ...movie, ...update_DTO };
+
         return this.movie_repo.save(updated);
     }
+      
 
     // -------- find (requirement 2.1.4) ---------------------------------------------------------------------
 
@@ -92,6 +83,15 @@ export class Service_Movies
 
         return movie;
     }
+
+    async find_by_title(title: string): Promise<Movie> {
+
+        const movie = await this.movie_repo.findOne({ where: { title } });
+            if (!movie) throw new NotFoundException(`Movie "${title}" not found.`);
+
+        return movie;
+      }
+      
 
     
 }

@@ -14,20 +14,20 @@ export class Showtime
     // -------- 2.2.1 requirements ------------------------------------------
 
     @ManyToOne(() => Movie, { eager: true })
-    @JoinColumn({ name: 'movie_id' })
+    @JoinColumn({ name: 'movieId' })
     movie: Movie;
 
     @Column()
-    movie_id: number;
+    movieId: number;
 
     @Column()
     theater: string;
 
     @Column({ type: 'timestamp' })
-    start_time: Date;
+    startTime: Date;
 
     @Column({ type: 'timestamp' })
-    end_time: Date;
+    endTime: Date;
 
     @Column({ type: 'decimal', precision: 10, scale: 2 })
     price: number;

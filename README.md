@@ -22,17 +22,17 @@
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-# Popcorn Palace Movie Ticket Booking System
+# Popcorn Palace Movie Booking Booking System
 
 ## Overview
-The Popcorn Palace Movie Ticket Booking System is a backend service designed to handle various operations related to movie,showtime, and booking management.
+The Popcorn Palace Movie Booking Booking System is a backend service designed to handle various operations related to movie,showtime, and booking management.
 
 ## Functionality
 The system provides the following APIs:
 
 - **Movie API**: Manages movies available on the platform.
 - **Showtime API**: Manages movies showtime on the theaters.
-- **Booking API**: Manages the movie tickets booking.
+- **Booking API**: Manages the movie bookings booking.
 
 ## Technical Aspects
 The system is built using Java Spring Boot, leveraging its robust framework for creating RESTful APIs. Data persistence can be managed using an in-memory database like H2 for simplicity, or a more robust solution like PostgreSQL for production.
@@ -67,7 +67,7 @@ Candidates are expected to design and implement the above APIs, adhering to REST
 
 | API Description           | Endpoint       | Request Body                                     | Response Status | Response Body                                                                                                                                          |
 |---------------------------|----------------|--------------------------------------------------|-----------------|--------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Book a ticket | POST /bookings | { "showtimeId": 1, "seatNumber": 15 , userId:"84438967-f68f-4fa0-b620-0f08217e76af"} | 200 OK | { "bookingId":"d1a6423b-4469-4b00-8c5f-e3cfc42eacae" }                                                                                                 |
+| Book a booking | POST /bookings | { "showtimeId": 1, "seatNumber": 15 , userId:"84438967-f68f-4fa0-b620-0f08217e76af"} | 200 OK | { "bookingId":"d1a6423b-4469-4b00-8c5f-e3cfc42eacae" }                                                                                                 |
 
 
 

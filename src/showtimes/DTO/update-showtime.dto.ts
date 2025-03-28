@@ -8,7 +8,12 @@ export class DTO_showtime_update
   @IsOptional()
   @IsNumber()
   @IsPositive()
-  movie_id?: number;
+  movieId?: number;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  price?: number;
 
   @IsOptional()
   @IsString()
@@ -17,16 +22,11 @@ export class DTO_showtime_update
   @IsOptional()
   @Type(() => Date)
   @IsDate()
-  start_time?: Date;
+  startTime?: Date;
 
   @IsOptional()
   @Type(() => Date)
   @IsDate()
-  end_time?: Date;
-
-  @IsOptional()
-  @IsNumber()
-  @Min(0)
-  price?: number;
+  endTime?: Date;
   
 }
