@@ -3,6 +3,7 @@ import { Service_Movies } from '../movies.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Movie } from '../movie.entity';
 import { Repository } from 'typeorm';
+import { BadRequestException } from '@nestjs/common';
 
 // requirement 3.3 done 
 
@@ -173,14 +174,50 @@ describe('Service_Movies', () =>
   {
     it('should delete a movie by id', async () => 
     {
-      const movieId = 1;
+      const movie_ID = 1;
       const deleteResult = { affected: 1 };
       
       movie_repo.delete.mockResolvedValue(deleteResult);
       
-      await service.remove(movieId);
+      await service.remove(movie_ID);
       
-      expect(movie_repo.delete).toHaveBeenCalledWith(movieId);
+      expect(movie_repo.delete).toHaveBeenCalledWith(movie_ID);
     });
   });
+
+  // -------- edge cases --------------------------------------------------------------------
+
+  describe('Edge Cases', () => {
+    it('should throw BadRequestException if create DTO is empty', async () => {
+      await expect(service.create({} as any)).rejects.toThrow(BadRequestException);
+    });
+
+    it('should throw BadRequestException for find_by_id with invalid id (0)', async () => {
+      await expect(service.find_by_id(0)).rejects.toThrow(BadRequestException);
+    });
+
+    it('should throw BadRequestException for update with invalid id (0)', async () => {
+      await expect(service.update(0, { title: 'New Title' } as any)).rejects.toThrow(BadRequestException);
+    });
+
+    it('should throw BadRequestException if update DTO is empty', async () => {
+      // Stub find_by_id to return a valid movie so that update proceeds to DTO check
+      const existingMovie = {
+        id: 1,
+        title: 'Test Movie',
+        genre: 'Action',
+        duration: 120,
+        rating: 'PG-13',
+        release_year: 2023,
+      };
+      movie_repo.findOne.mockResolvedValue(existingMovie);
+      
+      await expect(service.update(1, {} as any)).rejects.toThrow(BadRequestException);
+    });
+
+    it('should throw BadRequestException for remove with invalid id (-1)', async () => {
+      await expect(service.remove(-1)).rejects.toThrow(BadRequestException);
+    });
+  });
+
 });

@@ -4,8 +4,9 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Showtime } from '../showtime.entity';
 import { Repository } from 'typeorm';
 import { Service_Movies } from '../../movies/movies.service';
-import { ConflictException, NotFoundException } from '@nestjs/common';
+import { ConflictException, NotFoundException, BadRequestException } from '@nestjs/common';
 import { DTO_showtime_create } from '../DTO/create-showtime.dto';
+import { DTO_showtime_update } from '../DTO/update-showtime.dto';
 
 // requirement 3.3 done 
 
@@ -226,6 +227,8 @@ describe('ShowtimesService', () =>
     });
   });
 
+  // -------- remove --------------------------------------------------------------------
+  
   describe('remove', () => {
     it('should delete a showtime by id', async () => {
 
@@ -248,6 +251,43 @@ describe('ShowtimesService', () =>
       
       await expect(service.remove(showtime_ID)).rejects.toThrow(NotFoundException);
       expect(showtime_repo.delete).toHaveBeenCalledWith(showtime_ID);
+    });
+  });
+
+  
+  // -------- edge cases --------------------------------------------------------------------
+
+  describe('Edge Cases', () => 
+  {
+    it('should throw BadRequestException if create DTO is empty', async () => {
+      await expect(service.create({} as DTO_showtime_create)).rejects.toThrow(BadRequestException);
+    });
+
+    it('should throw BadRequestException for find_by_id with invalid id (0)', async () => {
+      await expect(service.find_by_id(0)).rejects.toThrow(BadRequestException);
+    });
+
+    it('should throw BadRequestException for update with invalid id (0)', async () => {
+      await expect(service.update(0, { theater: 'New Theater' } as DTO_showtime_update)).rejects.toThrow(BadRequestException);
+    });
+
+    it('should throw BadRequestException if update DTO is empty', async () => {
+      // Stub find_by_id to return an existing showtime so update proceeds to DTO check
+      const existingShowtime = {
+        id: 1,
+        movie_id: 1,
+        movie: { id: 1, title: 'Test Movie' },
+        theater: 'Theater 1',
+        start_time: new Date('2023-01-01T10:00:00Z'),
+        end_time: new Date('2023-01-01T12:00:00Z'),
+        price: 12.99,
+      };
+      showtime_repo.findOne.mockResolvedValue(existingShowtime);
+      await expect(service.update(1, {} as DTO_showtime_update)).rejects.toThrow(BadRequestException);
+    });
+
+    it('should throw BadRequestException for remove with invalid id (-1)', async () => {
+      await expect(service.remove(-1)).rejects.toThrow(BadRequestException);
     });
   });
 });
