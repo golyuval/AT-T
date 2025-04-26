@@ -9,6 +9,7 @@ import {
     HttpStatus,
     ValidationPipe,
   } from '@nestjs/common';
+  
 import { Service_Movies } from './movies.service';
 import { DTO_movie_create } from './dto/create-movie.dto';
 import { DTO_movie_update } from './dto/update-movie.dto';
@@ -32,7 +33,7 @@ export class Controller_Movies
     // ------ POST /movies -- ( add movie ) -------------------------------------------
 
     @Post()
-    create(@Body(ValidationPipe) create_DTO: DTO_movie_create) {
+    create(@Body() create_DTO: DTO_movie_create) {
       return this.movies_service.create(create_DTO);
     }
   
@@ -41,7 +42,7 @@ export class Controller_Movies
     @Post('update/:movieTitle')
     update_by_title(
       @Param('movieTitle') movieTitle: string,
-      @Body(ValidationPipe) updateDto: DTO_movie_update,
+      @Body() updateDto: DTO_movie_update,
     ) {
       return this.movies_service.update_by_title(movieTitle, updateDto);
     }

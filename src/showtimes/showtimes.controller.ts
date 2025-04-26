@@ -21,7 +21,7 @@ export class Controller_Showtime
     // ------ POST /showtimes -- ( add showtime ) -----------------------------------
 
     @Post()
-    create(@Body(ValidationPipe) create_DTO: DTO_showtime_create) {
+    create(@Body() create_DTO: DTO_showtime_create) {
         return this.showtimes_service.create(create_DTO);
     }
 
@@ -30,7 +30,7 @@ export class Controller_Showtime
     @Post('update/:showtimeId')
     update(
         @Param('showtimeId') showtimeId: string,
-        @Body(ValidationPipe) update_DTO: DTO_showtime_update,
+        @Body() update_DTO: DTO_showtime_update,
     ) {
         return this.showtimes_service.update(+showtimeId, update_DTO);
     }

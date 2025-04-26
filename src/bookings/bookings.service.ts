@@ -8,24 +8,6 @@ import { Service_Showtimes } from '../showtimes/showtimes.service';
 // requirement 2.3 done
 // requirement 3.1 done (overlapping and ID validations + informative errors)
 
-function validate_str_ID(id: string): void {
-    if (!id || id.trim() === '') {
-      throw new BadRequestException('Invalid booking ID provided.');
-    }
-}
-
-function validate_num_ID(id: number): void {
-if (!id || id <= 0) {
-    throw new BadRequestException('Invalid booking ID provided.');
-}
-}
-  
-function validateDto(dto: any, errorMessage: string): void {
-    if (!dto || Object.keys(dto).length === 0) {
-        throw new BadRequestException(errorMessage);
-    }
-}
-
 @Injectable()
 export class Service_Bookings 
 {
@@ -42,7 +24,6 @@ export class Service_Bookings
 
     async create(create_DTO: DTO_booking_create): Promise<Booking> 
     {
-        validateDto(create_DTO, 'Booking data must not be empty.');
 
         // showtime existence check
         await this.showtimes_service.find_by_id(create_DTO.showtimeId);

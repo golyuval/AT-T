@@ -1,15 +1,16 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
+// --------- 2.2.1 requirements 
 
 @Entity()
 export class Movie 
 {
-    // -------- ID ----------------------------------------------------------
+    // --- Primary Key -------------------------------------------
 
     @PrimaryGeneratedColumn()
     id: number;
 
-    // -------- 2.1.1 requirements ------------------------------------------
+    // --- Other Columns  ----------------------------------------
 
     @Column()
     title: string;
