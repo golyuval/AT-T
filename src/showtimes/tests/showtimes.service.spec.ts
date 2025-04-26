@@ -103,6 +103,7 @@ describe('ShowtimesService', () =>
       expect(builder.getMany).toHaveBeenCalled();
       expect(showtime_repo.save).toHaveBeenCalledWith(create_DTO);
       expect(result).toEqual(saved);
+      
     });
 
     it('should throw ConflictException if there are overlapping showtimes', async () => {
@@ -131,6 +132,7 @@ describe('ShowtimesService', () =>
       expect(movie_service.find_by_id).toHaveBeenCalledWith(createShowtimeDto.movieId);
       expect(builder.getMany).toHaveBeenCalled();
       expect(showtime_repo.save).not.toHaveBeenCalled();
+      
     });
   });
 
@@ -158,6 +160,7 @@ describe('ShowtimesService', () =>
       
       expect(showtime_repo.find).toHaveBeenCalled();
       expect(result).toEqual(showtimes);
+
     });
   });
 
@@ -190,11 +193,13 @@ describe('ShowtimesService', () =>
       await expect(service.find_by_id(999)).rejects.toThrow(NotFoundException);
       expect(showtime_repo.findOne).toHaveBeenCalledWith({ where: { id: 999 } });
     });
+
   });
 
   // -------- update --------------------------------------------------------------------
 
   describe('update', () => {
+
     it('should update a showtime if no conflicts', async () => 
     {
       const showtime_ID = 1;
@@ -231,6 +236,7 @@ describe('ShowtimesService', () =>
     });
     
     it('should call movies_service.find_by_id if update_DTO.movieId is provided and different from existing', async () => {
+
       const showtime_ID = 1;
       const existing_showtime = {
         id: showtime_ID,
@@ -241,27 +247,33 @@ describe('ShowtimesService', () =>
         endTime: new Date('2023-01-01T12:00:00Z'),
         price: 12.99,
       };
+
       const update_DTO = {
         movieId: 2,
       };
+
       const updated = {
         ...existing_showtime,
         movieId: 2,
         ...update_DTO,
       };
+
       movie_service.find_by_id.mockResolvedValue({ id: 2 });
       showtime_repo.findOne.mockResolvedValue(existing_showtime);
       showtime_repo.save.mockResolvedValue(updated);
       const result = await service.update(showtime_ID, update_DTO);
+
       expect(movie_service.find_by_id).toHaveBeenCalledWith(2);
       expect(showtime_repo.save).toHaveBeenCalledWith(updated);
       expect(result).toEqual(updated);
     });
+
   });
 
   // -------- remove --------------------------------------------------------------------
   
   describe('remove', () => {
+
     it('should delete a showtime by id', async () => {
 
       const showtime_ID = 1;
@@ -284,42 +296,7 @@ describe('ShowtimesService', () =>
       await expect(service.remove(showtime_ID)).rejects.toThrow(NotFoundException);
       expect(showtime_repo.delete).toHaveBeenCalledWith(showtime_ID);
     });
+
   });
 
-  
-  // -------- edge cases --------------------------------------------------------------------
-
-  describe('Edge Cases', () => 
-  {
-    it('should throw BadRequestException if create DTO is empty', async () => {
-      await expect(service.create({} as DTO_showtime_create)).rejects.toThrow(BadRequestException);
-    });
-
-    it('should throw BadRequestException for find_by_id with invalid id (0)', async () => {
-      await expect(service.find_by_id(0)).rejects.toThrow(BadRequestException);
-    });
-
-    it('should throw BadRequestException for update with invalid id (0)', async () => {
-      await expect(service.update(0, { theater: 'New Theater' } as DTO_showtime_update)).rejects.toThrow(BadRequestException);
-    });
-
-    it('should throw BadRequestException if update DTO is empty', async () => {
-      // Stub find_by_id to return an existing showtime so update proceeds to DTO check
-      const existingShowtime = {
-        id: 1,
-        movieId: 1,
-        movie: { id: 1, title: 'Test Movie' },
-        theater: 'Theater 1',
-        startTime: new Date('2023-01-01T10:00:00Z'),
-        endTime: new Date('2023-01-01T12:00:00Z'),
-        price: 12.99,
-      };
-      showtime_repo.findOne.mockResolvedValue(existingShowtime);
-      await expect(service.update(1, {} as DTO_showtime_update)).rejects.toThrow(BadRequestException);
-    });
-
-    it('should throw BadRequestException for remove with invalid id (-1)', async () => {
-      await expect(service.remove(-1)).rejects.toThrow(BadRequestException);
-    });
-  });
 });

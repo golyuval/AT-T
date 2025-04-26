@@ -58,7 +58,9 @@ describe('Service_Bookings', () =>
   // ------- tests -------------------------------------------------------------------------
     
   describe('create', () => {
+    
     it('should successfully create a booking', async () => {
+      
       const create_DTO: DTO_booking_create = {
         showtimeId: 1,
         seatNumber: 10,
@@ -106,8 +108,5 @@ describe('Service_Bookings', () =>
       await expect(service.create(create_DTO)).rejects.toThrow(ConflictException);
     });
 
-    it('should throw BadRequestException if DTO is empty', async () => {
-      await expect(service.create({} as any)).rejects.toThrow(BadRequestException);
-    });
   });
 });

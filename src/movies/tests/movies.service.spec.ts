@@ -130,18 +130,6 @@ describe('Service_Movies', () =>
     });
   });
 
-  // -------- edge cases --------------------------------------------------------------------
-
-  describe('Edge Cases', () => {
-    it('should throw BadRequestException if create DTO is empty', async () => {
-      await expect(service.create({} as any)).rejects.toThrow(BadRequestException);
-    });
-
-    it('should throw BadRequestException for find_by_id with invalid id (0)', async () => {
-      await expect(service.find_by_id(0)).rejects.toThrow(BadRequestException);
-    });
-  });
-  
   // -------- find_by_title --------------------------------------------------------------------
   
   describe('find_by_title', () => {

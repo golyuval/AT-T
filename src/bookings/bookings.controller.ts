@@ -14,7 +14,7 @@ export class Controller_Bookings
     // ------ GET /showtimes/{showtimeId} -- ( get showtime by ID ) -----------------------------------
 
     @Post()
-    create(@Body(ValidationPipe) create_DTO: DTO_booking_create) 
+    create(@Body() create_DTO: DTO_booking_create) 
     {
       return this.bookings_service.create(create_DTO);
     }

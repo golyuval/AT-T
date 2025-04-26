@@ -9,7 +9,7 @@ import { Module_Showtimes } from '../showtimes/showtimes.module';
 @Module({
   imports: [
     TypeOrmModule.forFeature([Booking]),
-    Module_Showtimes,  // now Service_Showtimes is available for injection
+    Module_Showtimes,  
   ],
   controllers: [Controller_Bookings],
   providers: [Service_Bookings],
